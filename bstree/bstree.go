@@ -129,6 +129,13 @@ func height(node *Node) int {
 	return ht
 }
 
+func nextInOrder(node *Node) *Node {
+	for node.left != nil {
+		node = node.left
+	}
+	return node
+}
+
 func addNode(root *Node, val Val) *Node {
 	if root == nil {
 		return &Node{nil, nil, val}
@@ -158,6 +165,9 @@ func delNode(root *Node, val Val) (*Node, error) {
 		} else if root.left == nil {
 			return root.right, nil
 		} else {
+			nnode := nextInOrder(root.right)
+			root.val = nnode.val
+			root.right, err = delNode(root.right, nnode.val)
 		}
 	}
 	return root, err

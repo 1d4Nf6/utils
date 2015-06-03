@@ -1,9 +1,6 @@
 package bstree
 
-import (
-	"fmt"
-	"testing"
-)
+import "testing"
 
 func TestInsert(t *testing.T) {
 	var bst Tree = new(BSTree)
@@ -24,23 +21,27 @@ func TestInsert(t *testing.T) {
 func TestDelete(t *testing.T) {
 	var bst Tree = new(BSTree)
 	vals := []IntVal{5, 1, 8, 2, 9, 0, 7}
-	//vals := []StringVal{"aa", "bb", "cc"}
 	for _, val := range vals {
 		bst.Insert(val)
 	}
 
-	fmt.Println(bst.Walk())
-	//bst.Delete(StringVal("aac"))
 	bst.Delete(IntVal(0))
-	fmt.Println(bst.Walk())
-	return
+	if l := bst.Size(); l != 6 {
+		t.Error("Expected 6, received", l)
+	}
 
-	//fmt.Println(bst.Walk())
-	fmt.Println(bst.Walk())
-	bst.Delete(IntVal(0))
-	fmt.Println(bst.Walk())
 	bst.Delete(IntVal(2))
-	bst.Delete(IntVal(0)) //TODO this fails !
-	//bst.Delete(IntVal(8))
-	fmt.Println(bst.Walk())
+	if l := bst.Size(); l != 5 {
+		t.Error("Expected 5, received", l)
+	}
+
+	bst.Delete(IntVal(5))
+	if l := bst.Size(); l != 4 {
+		t.Error("Expected 4, received", l)
+	}
+
+	if b := bst.Walk(); !b[0].Equals(IntVal(1)) {
+		t.Errorf("Expected 1, received %v", b[0])
+	}
+
 }
