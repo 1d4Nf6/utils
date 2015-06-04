@@ -1,3 +1,7 @@
+/* Package rbtree implements a Red-Black Tree.
+The algorithm has been adopted from CLR.
+It's understandable and correct, so I don't see a need to change it just for the sake of it.
+*/
 package rbtree
 
 import "fmt"
@@ -113,7 +117,9 @@ func (tree *RBTree) insertNode(val Val) {
 
 	tree.sz++
 
+	tree.Walk()
 	tree.fixUp(z)
+	tree.Walk()
 	return
 }
 
@@ -159,9 +165,11 @@ func (tree *RBTree) fixUp(z *Node) {
 				y.color = BLACK
 				z.p.p.color = RED
 				z = z.p.p
-			} else if z == z.p.right {
-				z = z.p
-				tree.rotateLeft(z)
+			} else {
+				if z == z.p.right {
+					z = z.p
+					tree.rotateLeft(z)
+				}
 				z.p.color = BLACK
 				z.p.p.color = RED
 				tree.rotateRight(z.p.p)
@@ -173,12 +181,14 @@ func (tree *RBTree) fixUp(z *Node) {
 				y.color = BLACK
 				z.p.p.color = RED
 				z = z.p.p
-			} else if z == z.p.left {
-				z = z.p
-				tree.rotateLeft(z)
+			} else {
+				if z == z.p.left {
+					z = z.p
+					tree.rotateRight(z.p.p)
+				}
 				z.p.color = BLACK
 				z.p.p.color = RED
-				tree.rotateRight(z.p.p)
+				tree.rotateLeft(z)
 			}
 		}
 	}

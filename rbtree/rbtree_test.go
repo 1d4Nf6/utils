@@ -7,6 +7,7 @@ import (
 
 func TestInsert(t *testing.T) {
 	//var rbt Tree = new(RBTree)
+	t.Skip()
 	var rbt Tree = NewRBTree()
 	vals := []IntVal{5, 1, 8, 2, 9, 0, 7}
 	for _, val := range vals {
@@ -26,17 +27,20 @@ func TestInsert(t *testing.T) {
 
 func TestBalanced(t *testing.T) {
 	var rbt Tree = NewRBTree()
-	vals := []IntVal{1, 2, 3}
+	//vals := []IntVal{1, 2}
+	//vals := []IntVal{1, 2, 3}
+	vals := []IntVal{3, 2, 1}
 	for _, val := range vals {
 		rbt.Insert(val)
 	}
 
-	//if !rbt.isBalanced() {
-	//t.Error("Tree not balanced")
-	//}
+	if !rbt.isBalanced() {
+		t.Error("Tree not balanced")
+	}
 }
 
 func TestDelete(t *testing.T) {
+	t.Skip()
 	//var rbt Tree = new(RBTree)
 	var rbt Tree = NewRBTree()
 	vals := []IntVal{5, 1, 8, 2, 9, 0, 7}
