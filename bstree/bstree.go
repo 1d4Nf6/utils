@@ -40,7 +40,6 @@ type Tree interface {
 	Height() int
 	Size() int
 	Delete(Val) error
-	isBalanced() bool
 }
 
 type BSTree struct {
@@ -62,22 +61,22 @@ func (tree *BSTree) Walk() []Val {
 	var vals = make([]Val, tree.sz, tree.sz)
 
 	if tree.sz > 0 {
-		walk(tree.root, vals, 0)
+		tree.walk(tree.root, vals, 0)
 	}
 
 	return vals
 }
 
-func (tree *BSTree) Insert(val Val) {
-	tree.root = addNode(tree.root, val)
-	tree.sz++
+func (bst *BSTree) Insert(val Val) {
+	bst.root = bst.addNode(bst.root, val)
+	bst.sz++
 	return
 }
 
 func (bst *BSTree) Delete(val Val) error {
 	var err error
 
-	if _, err = delNode(bst.root, val); err == nil {
+	if _, err = bst.delNode(bst.root, val); err == nil {
 		bst.sz--
 	}
 
@@ -85,12 +84,12 @@ func (bst *BSTree) Delete(val Val) error {
 }
 
 func (bst *BSTree) Height() int {
-	return height(bst.root)
+	return bst.height(bst.root)
 }
 
 func (bst *BSTree) isBalanced() bool {
-	lht := height(bst.root.left)
-	rht := height(bst.root.right)
+	lht := bst.height(bst.root.left)
+	rht := bst.height(bst.root.right)
 
 	if lht > rht+1 || rht > lht+1 {
 		return false
@@ -98,27 +97,27 @@ func (bst *BSTree) isBalanced() bool {
 	return true
 }
 
-func walk(node *Node, vals []Val, idx int) int {
+func (bst *BSTree) walk(node *Node, vals []Val, idx int) int {
 	if node == nil {
 		return idx
 	}
 
-	idx = walk(node.left, vals, idx)
+	idx = bst.walk(node.left, vals, idx)
 	vals[idx] = node.val
-	idx = walk(node.right, vals, idx+1)
+	idx = bst.walk(node.right, vals, idx+1)
 
 	return idx
 }
 
-func height(node *Node) int {
+func (bst *BSTree) height(node *Node) int {
 	if node == nil {
 		return -1
 	}
 
 	ht := 0
 
-	hLst := height(node.left)
-	hRst := height(node.right)
+	hLst := bst.height(node.left)
+	hRst := bst.height(node.right)
 
 	if hLst > hRst {
 		ht = hLst + 1
@@ -129,45 +128,45 @@ func height(node *Node) int {
 	return ht
 }
 
-func nextInOrder(node *Node) *Node {
+func (bst *BSTree) nextInOrder(node *Node) *Node {
 	for node.left != nil {
 		node = node.left
 	}
 	return node
 }
 
-func addNode(root *Node, val Val) *Node {
+func (bst *BSTree) addNode(root *Node, val Val) *Node {
 	if root == nil {
 		return &Node{nil, nil, val}
 	}
 	if val.LessThan(root.val) {
-		root.left = addNode(root.left, val)
+		root.left = bst.addNode(root.left, val)
 	} else {
-		root.right = addNode(root.right, val)
+		root.right = bst.addNode(root.right, val)
 	}
 
 	return root
 }
 
-func delNode(root *Node, val Val) (*Node, error) {
+func (bst *BSTree) delNode(root *Node, val Val) (*Node, error) {
 	err := fmt.Errorf("Value %v not found", val)
 	if root == nil {
 		return root, err
 	}
 
 	if val.LessThan(root.val) {
-		root.left, err = delNode(root.left, val)
+		root.left, err = bst.delNode(root.left, val)
 	} else if val.GreaterThan(root.val) {
-		root.right, err = delNode(root.right, val)
+		root.right, err = bst.delNode(root.right, val)
 	} else {
 		if root.right == nil {
 			return root.left, nil
 		} else if root.left == nil {
 			return root.right, nil
 		} else {
-			nnode := nextInOrder(root.right)
+			nnode := bst.nextInOrder(root.right)
 			root.val = nnode.val
-			root.right, err = delNode(root.right, nnode.val)
+			root.right, err = bst.delNode(root.right, nnode.val)
 		}
 	}
 	return root, err
