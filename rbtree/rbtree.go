@@ -1,7 +1,7 @@
 /* Package rbtree implements a Red-Black Tree.
 The algorithm has been adopted from CLR.
-It's understandable and correct, so I don't see a need to change it just for the sake of it.
 */
+
 package rbtree
 
 import "fmt"
@@ -13,6 +13,8 @@ type Val interface {
 }
 type StringVal string
 type IntVal int
+
+type NodeVals []Val
 
 func (a StringVal) LessThan(b Val) bool {
 	return a < b.(StringVal)
@@ -39,7 +41,7 @@ func (a IntVal) Equals(b Val) bool {
 }
 
 type Tree interface {
-	Walk() []Val
+	Walk() NodeVals
 	Insert(Val)
 	Height() int
 	Size() int
@@ -72,7 +74,7 @@ func (tree *RBTree) Size() int {
 	return tree.sz
 }
 
-func (tree *RBTree) Walk() []Val {
+func (tree *RBTree) Walk() NodeVals {
 	var vals = make([]Val, tree.sz, tree.sz)
 
 	if tree.sz > 0 {
@@ -117,9 +119,7 @@ func (tree *RBTree) insertNode(val Val) {
 
 	tree.sz++
 
-	tree.Walk()
 	tree.fixUp(z)
-	tree.Walk()
 	return
 }
 
